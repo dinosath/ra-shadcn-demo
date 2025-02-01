@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { CoreLayoutProps,useResourceDefinitions } from "ra-core";
 
 export function NavProjects({
   projects,

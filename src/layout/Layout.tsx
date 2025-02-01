@@ -1,5 +1,5 @@
 
-import { CoreLayoutProps } from "ra-core";
+import { CoreLayoutProps,useResourceDefinitions } from "ra-core";
 import { NavigationBar } from "./NavigationBar";
 import { UserMenu } from "./UserMenu";
 import { ModeToggle } from "@/components/mode-toggle"
@@ -82,9 +82,13 @@ import { Toaster } from "sonner"
 import { Toaster as ShadcnToaster } from "@/components/ui/toaster"
 
 export const Layout = (props: CoreLayoutProps) => {
+	const resourceDefinitions = useResourceDefinitions();
+
+
 	return (
 		<SidebarProvider>
-			<AppSidebar />
+			<AppSidebar/>
+
 			<SidebarInset>
 				<header className="flex h-16 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
 					<div className="flex items-center gap-2 px-4 w-full">
