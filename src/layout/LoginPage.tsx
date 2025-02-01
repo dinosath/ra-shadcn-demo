@@ -44,7 +44,7 @@ export const LoginPage = () => {
                 Try janedoe@acme.com / password
               </p>
             </div>
-            <Form className="space-y-8" onSubmit={(values) => login(values)}>
+            <Form className="space-y-8" onSubmit={(values:any) => login(values)}>
               <RaInput
                 label="Email"
                 source="email"

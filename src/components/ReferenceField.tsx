@@ -15,7 +15,7 @@ import {
 } from "ra-core";
 import { ReactNode, memo } from "react";
 import { Link } from "react-router-dom";
-import { UseQueryOptions } from "react-query";
+import { UseQueryOptions } from "@tanstack/react-query";
 import get from "lodash/get";
 
 export const ReferenceField = (props: ReferenceFieldProps) => {
@@ -25,24 +25,27 @@ export const ReferenceField = (props: ReferenceFieldProps) => {
   const translate = useTranslate();
 
   return id == null ? (
-    emptyText ? (
-      <span>{emptyText && translate(emptyText, { _: emptyText })}</span>
-    ) : null
+      emptyText ? (
+          <span>{emptyText && translate(emptyText, { _: emptyText })}</span>
+      ) : null
   ) : (
-    <NonEmptyReferenceField
-      {...rest}
-      link={link}
-      emptyText={emptyText}
-      source={source}
-      record={record}
-      id={id as Identifier}
-    />
+      <NonEmptyReferenceField
+          {...rest}
+          link={link}
+          emptyText={emptyText}
+          source={source}
+          record={record}
+          id={id as Identifier}
+      />
   );
 };
 
 export interface ReferenceFieldProps extends Partial<ReferenceFieldViewProps> {
   children?: ReactNode;
-  queryOptions?: UseQueryOptions<RaRecord[], Error> & {
+  queryOptions?: Omit<
+      UseQueryOptions<RaRecord[], Error, RaRecord[], readonly unknown[]>,
+      "queryFn" | "queryKey"
+  > & {
     meta?: any;
   };
   reference: string;
@@ -51,35 +54,31 @@ export interface ReferenceFieldProps extends Partial<ReferenceFieldViewProps> {
   source: string;
 }
 
-/**
- * This intermediate component is made necessary by the useReference hook,
- * which cannot be called conditionally when get(record, source) is empty.
- */
 export const NonEmptyReferenceField = ({
-  children,
-  id,
-  reference,
-  queryOptions,
-  link,
-  ...props
-}: ReferenceFieldProps & {
+                                         children,
+                                         id,
+                                         reference,
+                                         queryOptions,
+                                         link,
+                                         ...props
+                                       }: ReferenceFieldProps & {
   id: Identifier;
 }) => {
   return (
-    <ResourceContextProvider value={reference}>
-      <PureReferenceFieldView
-        reference={reference}
-        {...props}
-        {...useReference({
-          reference,
-          id,
-          options: queryOptions,
-        })}
-        resourceLinkPath={link}
-      >
-        {children}
-      </PureReferenceFieldView>
-    </ResourceContextProvider>
+      <ResourceContextProvider value={reference}>
+        <PureReferenceFieldView
+            reference={reference}
+            {...props}
+            {...useReference({
+              reference,
+              id,
+              options: queryOptions,
+            })}
+            resourceLinkPath={link}
+        >
+          {children}
+        </PureReferenceFieldView>
+      </ResourceContextProvider>
   );
 };
 
@@ -110,44 +109,44 @@ export const ReferenceFieldView = (props: ReferenceFieldViewProps) => {
   }
   if (!referenceRecord) {
     return emptyText ? (
-      <>{emptyText && translate(emptyText, { _: emptyText })}</>
+        <>{emptyText && translate(emptyText, { _: emptyText })}</>
     ) : null;
   }
 
   const link =
-    resourceLinkPath === false ||
-    (resourceLinkPath === "edit" && !resourceDefinition.hasEdit) ||
-    (resourceLinkPath === "show" && !resourceDefinition.hasShow)
-      ? false
-      : createPath({
-          resource: reference,
-          id: referenceRecord.id,
-          type:
-            typeof resourceLinkPath === "function"
-              ? (resourceLinkPath(referenceRecord, reference) as CreatePathType)
-              : (resourceLinkPath as CreatePathType),
-        });
+      resourceLinkPath === false ||
+      (resourceLinkPath === "edit" && !resourceDefinition.hasEdit) ||
+      (resourceLinkPath === "show" && !resourceDefinition.hasShow)
+          ? false
+          : createPath({
+            resource: reference,
+            id: referenceRecord.id,
+            type:
+                typeof resourceLinkPath === "function"
+                    ? (resourceLinkPath(referenceRecord, reference) as CreatePathType)
+                    : (resourceLinkPath as CreatePathType),
+          });
 
   const child = children || (
-    <span>{getRecordRepresentation(referenceRecord)}</span>
+      <span>{getRecordRepresentation(referenceRecord)}</span>
   );
 
   if (link) {
     return (
-      <div className={className}>
-        <RecordContextProvider value={referenceRecord}>
-          <Link to={link} onClick={stopPropagation}>
-            {child}
-          </Link>
-        </RecordContextProvider>
-      </div>
+        <div className={className}>
+          <RecordContextProvider value={referenceRecord}>
+            <Link to={link} onClick={stopPropagation}>
+              {child}
+            </Link>
+          </RecordContextProvider>
+        </div>
     );
   }
 
   return (
-    <RecordContextProvider value={referenceRecord}>
-      {child}
-    </RecordContextProvider>
+      <RecordContextProvider value={referenceRecord}>
+        {child}
+      </RecordContextProvider>
   );
 };
 

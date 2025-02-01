@@ -44,7 +44,7 @@ export const ReferenceManyCount = <RecordType extends RaRecord = RaRecord>(
 				pathname: createPath({ resource: reference, type: "list" }),
 				search: `filter=${JSON.stringify({
 					...(filter || {}),
-					[target]: record[source],
+					[target]: record ? record : [source],
 				})}`,
 			}}
 			onClick={(e) => e.stopPropagation()}

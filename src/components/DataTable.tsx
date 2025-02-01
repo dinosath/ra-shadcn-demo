@@ -4,7 +4,7 @@ import {
 	SortingState,
 	flexRender,
 	getCoreRowModel,
-	useReactTable,
+	useReactTable, Updater, TableState,
 } from "@tanstack/react-table";
 import {
 	Table,
@@ -18,6 +18,8 @@ import { useListContext } from "ra-core";
 import { ArrowDownAZ, ArrowUpZA } from "lucide-react";
 
 import { Button } from "./ui/button";
+import {undefined} from "zod";
+import {data} from "react-router-dom";
 
 export function DataTable<TData>({ columns }: DataTableProps<TData>) {
 	const { data, page, perPage, setPage, setSort, sort, total } =
@@ -40,17 +42,21 @@ export function DataTable<TData>({ columns }: DataTableProps<TData>) {
 		[sort]
 	);
 
+	// @ts-ignore
 	const table = useReactTable({
-		data,
+		onStateChange(updater: Updater<TableState>): void {
+		},
+		renderFallbackValue: undefined,
+		data: data ?? [], // Ensure data is always an array
 		columns,
 		getCoreRowModel: getCoreRowModel(),
-		pageCount: Math.ceil(total / perPage),
+		pageCount: total ? Math.ceil(total / perPage) : 0, // Handle total being undefined
 		state: {
 			pagination,
 			sorting,
 		},
 		manualPagination: true,
-		manualSorting: true,
+		manualSorting: true
 	});
 
 	return (
