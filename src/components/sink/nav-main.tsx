@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import {Link} from "react-router-dom";
 
 export class NavEntry {
   title: string;
@@ -42,6 +43,7 @@ export class NavEntry {
 export function NavMain({ items }: { items: NavEntry[] }) {
   return (
       <SidebarGroup>
+        <SidebarGroupLabel>General</SidebarGroupLabel>
         <SidebarMenu>
           {items.map((item) => (
               item.items && item.items.length > 0 ? (
@@ -64,9 +66,9 @@ export function NavMain({ items }: { items: NavEntry[] }) {
                           {item.items.map((subItem) => (
                               <SidebarMenuSubItem key={subItem.title}>
                                 <SidebarMenuSubButton asChild>
-                                  <a href={subItem.url}>
-                                    <span>{subItem.title}</span>
-                                  </a>
+                                  <Link to={subItem.url}>
+                                    {subItem.title}
+                                  </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
                           ))}
@@ -77,10 +79,10 @@ export function NavMain({ items }: { items: NavEntry[] }) {
               ) : (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton tooltip={item.title} asChild>
-                      <a href={item.url}>
-                        {item.icon && <item.icon />}
-                        <span>{item.title}</span>
-                      </a>
+                        <Link to={item.url}>
+                            {item.icon && <item.icon />}
+                            <span>{item.title}</span>
+                        </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
               )

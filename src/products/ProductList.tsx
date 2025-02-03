@@ -1,11 +1,18 @@
 import { BadgeField } from "@/components/BadgeField";
 import { Breadcrumb, BreadcrumbItem } from "@/components/Breadcrumb";
-import { DataTable } from "@/components/DataTable";
+// import { DataTable } from "@/components/DataTable";
+import { DataTableDemo } from "./DataTable";
 import { ReferenceField } from "@/components/ReferenceField";
 import { buttonVariants } from "@/components/ui/button";
 import { createColumnHelper } from "@tanstack/react-table";
 import { ListContextProvider, useListController } from "ra-core";
 import { Link } from "react-router-dom";
+import {TasksPrimaryButtons} from "@/products/components/tasks-primary-buttons.tsx";
+import {tasks} from "@/products/data/tasks.ts";
+import {TasksDialogs} from "@/products/components/tasks-dialogs.tsx";
+import TasksProvider from "@/products/context/tasks-context.tsx";
+import DynamicTable from "@/components/DynamicTable.tsx";
+import {DataTable} from "@/components/tasks/data-table.tsx";
 
 type Product = {
   id: number;
@@ -76,17 +83,25 @@ export const ProductList = () => {
 
   return (
     <ListContextProvider value={context}>
-      <h2 className="text-3xl font-bold tracking-tight mb-2">Products</h2>
-      <Breadcrumb className="mb-8">
-        <BreadcrumbItem>
-          <Link to="/">Home</Link>
-        </BreadcrumbItem>
-        <BreadcrumbItem>
-          Products
-        </BreadcrumbItem>
-      </Breadcrumb>
-      {/* @ts-ignore */}
-      <DataTable<Product> columns={columns} />
+
+    <TasksProvider>
+          <div className='mb-2 flex flex-wrap items-center justify-between gap-x-4 space-y-2'>
+            <div>
+              <h2 className='text-2xl font-bold tracking-tight'>Tasks</h2>
+              <p className='text-muted-foreground'>
+                Here&apos;s a list of your tasks for this month!
+              </p>
+            </div>
+            <TasksPrimaryButtons />
+          </div>
+          <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+            {/*<DataTable data={tasks} columns={columns} />*/}
+            <DataTableDemo />
+          </div>
+</TasksProvider>
+
+
+        {/*<TasksDialogs />*/}
     </ListContextProvider>
   );
 };

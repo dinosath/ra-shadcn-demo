@@ -18,8 +18,8 @@ function App() {
 			loginPage={LoginPage}
 			dashboard={Dashboard}
 		>
-			<Resource {...products} group="Catalog"/>
-			<Resource {...categories} group="Catalog"/>
+			<Resource {...products} />
+			<Resource {...categories} />
 		</CoreAdmin>
 	);
 }
